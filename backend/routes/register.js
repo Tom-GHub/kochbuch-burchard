@@ -12,10 +12,13 @@ function isValidPassword(password) {
 }
 
 router.post('/api/register', async (req, res) => {
+
+    console.log("Hier teste ich den body", req.body);
+
     const { username, firstname, lastname, email, password, passwordCheck } = req.body;
 
     const conn = await getDatabaseConnection();
-
+    
     try {
     // Pflichtfelder prüfen
     if (!username || !email || !password || !passwordCheck) {
@@ -24,27 +27,17 @@ router.post('/api/register', async (req, res) => {
 
         // Passwort bestätigen
         if (password !== passwordCheck) {
-        return res.status(400).json({ message: 'Passwörter stimmen nicht überein.' });
+        return res.status(401).json({ message: 'Passwörter stimmen nicht überein.' });
         }
 
         // Passwort prüfen
         if (!isValidPassword(password)) {
-        return res.status(400).json({
+        return res.status(401).json({
             message: 'Passwort muss mindestens 8 Zeichen, einen Großbuchstaben, eine Zahl und ein Sonderzeichen (!@$%?) enthalten.',
         });
         }
 
-        // E-Mail prüfen
-        const [emailCheck] = await conn.query('SELECT * FROM user WHERE email = ?', [email]);
-        if (emailCheck.length > 0) {
-        return res.status(409).json({ message: 'E-Mail ist bereits registriert.' });
-        }
 
-        // Username prüfen
-        const [usernameCheck] = await conn.query('SELECT * FROM user WHERE username = ?', [username]);
-        if (usernameCheck.length > 0) {
-        return res.status(409).json({ message: 'Benutzername ist bereits vergeben.' });
-        }
 
         // Passwort hashen
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -56,7 +49,7 @@ router.post('/api/register', async (req, res) => {
         [username, firstname, lastname, email, hashedPassword]
         );
 
-        res.status(201).json({ message: 'Registrierung erfolgreich.' });
+        res.status(200).json({ message: 'Registrierung erfolgreich.' });
     } catch (err) {
         console.error('Fehler bei Registrierung:', err);
         res.status(500).json({ message: 'Serverfehler bei der Registrierung.' });
