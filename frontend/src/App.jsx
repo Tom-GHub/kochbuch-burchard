@@ -12,6 +12,28 @@ import './App.css'
 
 function App() {
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userId, setUserId] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect( () => {
+    const storedToken = localStorage.getItem('token');
+    const storedUserId = localStorage.getItem('userID');
+    
+    if( storedToken && storedUserId ) {
+      setIsLoggedIn(true);
+      setUserId(storedUserId);
+    }
+  }, [navigate]
+  );
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userID');
+    setIsLoggedIn(false);
+    navigate('/');
+  };
 
   return (
     <>
@@ -22,9 +44,15 @@ function App() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto" activeKey={location.pathname}>
+            
           <Nav.Link as={Link} to="/">Home</Nav.Link>
           <Nav.Link as={Link} to="/register">Registrierung</Nav.Link>
-          <Nav.Link as={Link} to="/login">Login</Nav.Link>
+
+          { isLoggedIn ?
+            <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+            :
+            <Nav.Link as={Link} to="/login">Login</Nav.Link>
+          }
 
           </Nav>
           </Navbar.Collapse>
@@ -32,9 +60,18 @@ function App() {
       </Navbar>
 
       <Routes>
-        <Route path='/' element={<Home/>}  />
+        <Route path='/' element={<Home
+                        userName={userName} />}  />
+        
         <Route path='/register' element={<Register/>}  />
-        <Route path='/login' element={<Login/>}  />
+
+        <Route path='/login' element={<Login
+          isLoggedIn = {isLoggedIn}
+          setIsLoggedIn = {setIsLoggedIn}
+          setUserName = {setUserName}
+          userName = {userName} 
+        />}  />
+
       </Routes>
     </div>
     </>
