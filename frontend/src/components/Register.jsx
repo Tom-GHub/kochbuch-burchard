@@ -27,12 +27,15 @@ function Register() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(formData);
+
+        // console.log(formData);  // debug
+
         setFormData( (prev) => ({
             ...prev,
             [name]: value,
         }));
-        console.log(formData);
+
+        // console.log(formData);  // debug
     };
 
 
@@ -40,7 +43,7 @@ function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("Formular-Daten: ", formData);
+        console.log("Register.jsx - handleSubmit formData: ", formData);
 
         try {
             const res = await fetch("http://fi.mshome.net:3001/api/register", {

@@ -13,7 +13,7 @@ function Home( {} ) {
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}`); // Backend-Root-Route aufrufen
                 const data = await response.json(); // JSON-Antwort lesen
-                console.log(data);  // Serverantwort in der Konsole ausgeben
+                console.log('Home.jsx - data: ', data);  // Serverantwort in der Konsole ausgeben
             } catch (error) {
                 console.error("Fehler beim Login:", error);
             }
@@ -27,7 +27,7 @@ function Home( {} ) {
         <>
         <div>
             {/* Begrüßungs-Überschrift mit dem Benutzernamen */}
-            <h1>Willkommen {} </h1>  {/* mit geschweiften klammern javasript benutzen */}
+            <h1>Willkommen im Kochbuch{} </h1>  {/* mit geschweiften klammern javasript benutzen */}
 
 
             {/* Fester Begrüßungstext */}
