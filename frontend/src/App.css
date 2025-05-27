@@ -40,3 +40,23 @@
 .read-the-docs {
   color: #888;
 }
+
+@font-face {
+  font-family: 'DancingScript';
+  src: url('/fonts/Dancing_Script/static/DancingScript-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'PoetsenOne';
+  src: url('/fonts/Poetsen_One/PoetsenOne-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.link-style {
+  font-family: 'PoetsenOne', sans-serif;
+  font-size: 1.2rem; /* Optional: etwas größer machen */
+}
