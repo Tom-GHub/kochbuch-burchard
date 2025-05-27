@@ -5,6 +5,7 @@ import 'dotenv/config';
 import homeRouter from './routes/home.js';
 import registerRouter from './routes/register.js';
 import loginRouter from './routes/login.js';
+import rezeptRouter from './routes/rezept.js';
 
 import path from 'node:path';
 
@@ -31,6 +32,7 @@ app.use(cors({
 app.use('/', homeRouter);
 app.use('/', registerRouter);
 app.use('/', loginRouter);
+app.use('/', rezeptRouter);
 
 
 
