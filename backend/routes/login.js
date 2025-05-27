@@ -24,12 +24,11 @@ router.post('/api/login', async (req, res) => {
         return res.status(400).json({ message: 'Bitte E-Mail und Passwort eingeben.' });
         }
 
-        // fehlt noch eine variable als speicherort?
     [user] = await conn.query(
         'SELECT * FROM user WHERE email = ? ',
         [email]
     );
-    console.log('login.js - userMail: ', user);
+    console.log('login.js - user: ', user);
 
     } catch (err) {
         console.error('Fehler bei der Anmeldung:', err);
@@ -56,11 +55,9 @@ router.post('/api/login', async (req, res) => {
         {expiresIn: '4h' }
     );
     
-    res.json( { token, userID: user.id });
+    res.json( { token, userID: user.id, username: user.username});
 });
-    // vergleich password, password hash?
-    // wie komme ich an pw hash?
-    // token erstellen? user, email
+
 
 
 
