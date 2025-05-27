@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import pizzaLogin from '../assets/pizzaLogin.png'
 import { Form, Button } from "react-bootstrap";
 import { data, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 
 function Login( {isLoggedIn, setIsLoggedIn, userName, setUserName} ) {
@@ -15,7 +16,6 @@ function Login( {isLoggedIn, setIsLoggedIn, userName, setUserName} ) {
     const [formData, setFormData] = useState( {
         email: "",
         password: "",
-        username: "",
     });
 
     const handleChange = (e) => {
@@ -40,17 +40,20 @@ function Login( {isLoggedIn, setIsLoggedIn, userName, setUserName} ) {
             });
 
             const jsonData = await res.json();
+            console.log("Login - jsonData 01: ", jsonData);
+            console.log("Login.jsx - handleSubmit formData nach jasonData: ", formData);
 
         if(res.ok) {
             // alert("Sie haben sich erfolgreich Angemeldet.");
-            console.log("Login - jsonData: ", jsonData);
+            console.log("Login - jsonData 02: ", jsonData);
             
             localStorage.setItem('token', jsonData.token);
             localStorage.setItem('userID', jsonData.userID);
+            localStorage.setItem('username', jsonData.username);
 
             setIsLoggedIn(true);
-            setUserName(formData.username);
-            setMessage('Sie sind eingeloggt.');
+            setUserName(jsonData.username); // bauche ich nicht?
+            setMessage('Sie sind eingeloggt.'); //brauche ich nicht?
 
             setTimeout( () => {
                 navigate('/');
@@ -96,7 +99,7 @@ return (
 
                 <div className='text-center text-md-start mt-4 pt-2 d-flex flex-column'>
                     <Button type="submit" 
-                                className="mdb-btn d-flex align-items-center justify-content-center" 
+                                className="mdb-btn fw-bold d-flex align-items-center justify-content-center" 
                                 style={{
                                     userSelect: 'none',
                                     whiteSpace: 'nowrap',
@@ -109,7 +112,7 @@ return (
                                     transform: 'none'
                                 }}>Login
                         </Button>
-                    <p className="small fw-bold mt-2 pt-1 mb-2">Noch kein Account? <a href="/register" className="link-danger">Register</a></p>
+                    <p className="small fw-bold mt-2 pt-1 mb-2">Noch kein Account? <Link as={Link} to="/register">Register</Link> </p>
                 </div>
                 </MDBCol>
 
