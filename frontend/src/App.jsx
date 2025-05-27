@@ -9,73 +9,92 @@ import Login from './components/Login';
 
 
 import './App.css'
+import {
+    MDBContainer,
+    MDBNavbar,
+    MDBNavbarBrand,
+    MDBNavbarToggler,
+    MDBNavbarNav,
+    MDBNavbarItem,
+    MDBNavbarLink,
+    MDBIcon,
+    MDBCollapse
+} from 'mdb-react-ui-kit';
 
 function App() {
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [userId, setUserId] = useState(null);
-  const navigate = useNavigate();
+    const [openNavSecond, setOpenNavSecond] = useState(false);
 
-  useEffect( () => {
-    const storedToken = localStorage.getItem('token');
-    const storedUserId = localStorage.getItem('userID');
-    
-    if( storedToken && storedUserId ) {
-      setIsLoggedIn(true);
-      setUserId(storedUserId);
-    }
-  }, [navigate]
-  );
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userName, setUserName] = useState('');
+    const [userId, setUserId] = useState(null);
+    const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userID');
-    setIsLoggedIn(false);
-    navigate('/');
-  };
+    useEffect( () => {
+        const storedToken = localStorage.getItem('token');
+        const storedUserId = localStorage.getItem('userID');
+        
+        if( storedToken && storedUserId ) {
+        setIsLoggedIn(true);
+        setUserId(storedUserId);
+        }
+    }, [navigate]
+    );
 
-  return (
-    <>
-    <div>
-      <Navbar expand="lg" className="bg-body-tertiary fixed-top">
-        <Container>
-          <Navbar.Brand href="/">Kochbuch</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto" activeKey={location.pathname}>
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userID');
+        setIsLoggedIn(false);
+        navigate('/');
+    };
+
+    return (
+        
+        <>
+        <MDBNavbar className='fixed-top shadow-3' expand='lg' light bgColor='primary'>
+        <MDBContainer fluid>
+            <MDBNavbarBrand className='kochbuch text-white fw-bold ' style={{ fontFamily: 'DancingScript, cursive' }}>Kochbuch</MDBNavbarBrand>
+            <MDBNavbarToggler className='text-white'
+            aria-expanded='false'
+            aria-label='Toggle navigation'
+            onClick={() => setOpenNavSecond(!openNavSecond)}
+            >
+            <MDBIcon icon='bars' fas />
+            </MDBNavbarToggler>
+            <MDBCollapse navbar open={openNavSecond}>
+            <MDBNavbarNav>
             
-          <Nav.Link as={Link} to="/">Home</Nav.Link>
-          <Nav.Link as={Link} to="/register">Registrierung</Nav.Link>
 
-          { isLoggedIn ?
-            <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
-            :
-            <Nav.Link as={Link} to="/login">Login</Nav.Link>
-          }
+                <Nav.Link className="text-white" as={Link} to="/">Home</Nav.Link>
+                <Nav.Link className="text-white" as={Link} to="/register">Registrierung</Nav.Link>
+                { isLoggedIn ?
+                    <Nav.Link className="text-white" onClick={handleLogout}>Logout</Nav.Link>
+                    :
+                    <Nav.Link className="text-white" as={Link} to="/login">Login</Nav.Link>
+                }
 
-          </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
 
-      <Routes>
+            </MDBNavbarNav>
+            </MDBCollapse>
+        </MDBContainer>
+        </MDBNavbar>
+
+        <Routes>
         <Route path='/' element={<Home
                         userName={userName} />}  />
         
         <Route path='/register' element={<Register/>}  />
 
         <Route path='/login' element={<Login
-          isLoggedIn = {isLoggedIn}
-          setIsLoggedIn = {setIsLoggedIn}
-          setUserName = {setUserName}
-          userName = {userName} 
+            isLoggedIn = {isLoggedIn}
+            setIsLoggedIn = {setIsLoggedIn}
+            setUserName = {setUserName}
+            userName = {userName} 
         />}  />
-
-      </Routes>
-    </div>
-    </>
-  )
+        </Routes>
+        </>
+    );
 }
 
-export default App
+
+export default App;
