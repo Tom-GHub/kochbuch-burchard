@@ -11,9 +11,15 @@ function isValidPassword(password) {
     return regex.test(password);
 }
 
+// router.post("/api/login")
+// router.post("/api/recipe")
+// router.get("/api/recipe") 
+// router.put("/api/recipe") 
+// router.get("/api/recipe/:id") 
+
 router.post('/api/register', async (req, res) => {
 
-    console.log("Hier teste ich den body", req.body);
+    console.log("register.js - req.body: ", req.body);
 
     const { username, firstname, lastname, email, password, passwordCheck } = req.body;
 
