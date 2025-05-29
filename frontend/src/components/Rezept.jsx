@@ -15,10 +15,13 @@ from 'mdb-react-ui-kit';
 import { useState } from 'react';
 
 
+
 function Rezept( {} ) { 
 
+    const [image, setImage] = useState(null);
+
+    // behandelt formfelder des rezepts
     const [formData, setFormData] = useState({
-        user_id: 5,
         titel: '',
         zutatenliste: '',
         zubereitung: '',
@@ -35,10 +38,16 @@ function Rezept( {} ) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // token hinzufügen im token ist userID - die api kann hieraus die id auslesen -> das passiert in der middleware
+        const token = localStorage.getItem("token");
+        
         try {
             const res = await fetch("http://fi.mshome.net:3001/api/rezept", {
                 method: "POST",
-                headers: { "Content-Type": "application/json", },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(formData),
             });
 
