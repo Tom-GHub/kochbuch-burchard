@@ -18,7 +18,6 @@ import { useState } from 'react';
 
 function Rezept( {} ) { 
 
-    const [image, setImage] = useState(null);
 
     // behandelt formfelder des rezepts
     const [formData, setFormData] = useState({
@@ -27,12 +26,16 @@ function Rezept( {} ) {
         zubereitung: '',
     });
 
+    const [picture, setPicture] = useState(null);
+
+    // Jede veränderung in den Form-Feldern wird erfasst und mit dazu gepackt, also Buchstabe für Buchstabe wird ein String gebaut.
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData( (prev) => ({
             ...prev,
             [name]: value,
         }));
+        // console.log('handleChange - name:, value ',name, value);
     };
 
     const handleSubmit = async (e) => {
@@ -40,15 +43,24 @@ function Rezept( {} ) {
 
         // token hinzufügen im token ist userID - die api kann hieraus die id auslesen -> das passiert in der middleware
         const token = localStorage.getItem("token");
-        
+
+        // Add formData object to send picture to server
+        const formDataObj = new FormData();
+        formDataObj.append('titel', formData.titel);
+        formDataObj.append('zutatenliste', formData.zutatenliste);
+        formDataObj.append('zubereitung', formData.zubereitung);
+        if (picture) {
+            formDataObj.append('picture', picture);
+        }
+
         try {
             const res = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/api/rezept`, {
                 method: "POST",
                 headers: { 
-                    "Content-Type": "application/json",
+                    
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify(formData),
+                body: formDataObj,
             });
 
             const jsonData = await res.json();
@@ -103,8 +115,11 @@ function Rezept( {} ) {
                             </div>
                         <div className="d-flex flex-column w-100">
                             <MDBFile 
-                                id='imageUpload' 
-                                className='w-100'
+                            id="imageUpload"
+                            name="picture"
+                            accept="image/*"
+                            className="w-100"
+                            onChange={e => setPicture(e.target.files[0])}
                             />
                             <label htmlFor="imageUpload" className="form-label ms-1">Bild hochladen</label>
                         </div>
