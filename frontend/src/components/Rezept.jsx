@@ -42,7 +42,7 @@ function Rezept( {} ) {
         const token = localStorage.getItem("token");
         
         try {
-            const res = await fetch("http://fi.mshome.net:3001/api/rezept", {
+            const res = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/api/rezept`, {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",

@@ -47,7 +47,7 @@ function Register() {
         console.log("Register.jsx - handleSubmit formData: ", formData);
 
         try {
-            const res = await fetch("http://fi.mshome.net:3001/api/register", {
+            const res = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/api/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", },
                 body: JSON.stringify(formData),
