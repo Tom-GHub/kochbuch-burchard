@@ -1,21 +1,17 @@
 import { useEffect, useState } from "react"
-import { Nav } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import {
-    MDBBtn,
     MDBContainer,
     MDBRow,
     MDBCol,
     MDBCard,
     MDBCardBody,
     MDBCardImage,
-    MDBInput,
-    MDBListGroup,
-    MDBListGroupItem
 }
 from 'mdb-react-ui-kit';
 
-function Rezeptliste() {
+function Rezeptliste() { 
+
     const [rezepte, setRezepte] = useState([]);
 
     useEffect(() => {
@@ -33,7 +29,7 @@ function Rezeptliste() {
                 const data = await response.json();
 
                 // Was im Frontend von der API ankommt
-                console.log("API Response:", data);
+                // console.log("API Response:", data);
 
                 // Überprüfen ob ein Array als Antwort vom Backend kommt
                 if (Array.isArray(data) ) {
@@ -46,6 +42,7 @@ function Rezeptliste() {
                 console.error("Fehler beim Laden der Rezepte:", error);
             }
         };
+
 
         fetchRezepte();
     }, []);
@@ -79,7 +76,7 @@ function Rezeptliste() {
                                                 <p className="text-muted" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                     {rezept.ingredients}
                                                 </p>
-                                                <Link to={`/rezept/${rezept.id}`} className="btn btn-primary btn-sm mt-2">
+                                                <Link to={`/rezeptdetail/${rezept.id}`} className="btn btn-primary btn-sm mt-2">
                                                     Ansehen
                                                 </Link>
                                             </MDBCardBody>
