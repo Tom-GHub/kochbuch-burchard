@@ -8,7 +8,6 @@ import 'dotenv/config';
 const router = express.Router(); //erstellt route objekt
 
 
-
 router.post('/api/login', async (req, res) => {
     const { email, password } = req.body;
     const conn = await getDatabaseConnection();
@@ -50,19 +49,12 @@ router.post('/api/login', async (req, res) => {
         );
 
     const token = jwt.sign(
-        { id: user.id, username: user.username, email: user.email },
+        { id: user.id, username: user.username, email: user.email }, // die daten können in der middlewar ausgelesen werden
         process.env.JWT_SECRET_KEY,
-        {expiresIn: '4h' }
+        {expiresIn: '400h' }
     );
     
-    res.json( { token, userID: user.id, username: user.username});
+    res.json( { token, userID: user.id, username: user.username });
 });
-
-
-
-
-
-
-
 
 export default router;

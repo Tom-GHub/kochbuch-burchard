@@ -1,5 +1,4 @@
 
-
 // token wird gelese, geprüft - inhalt wird als req auf die variable gelegt
 
 
