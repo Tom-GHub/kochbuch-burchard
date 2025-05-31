@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
-import {Container, Nav, Navbar} from 'react-bootstrap';
+import { Nav, } from 'react-bootstrap';
 import { Routes, Route, Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
 import Rezept from './components/Rezept';
+import EigeneRezepte from './components/EigeneRezepte';
+import Rezeptliste from './components/Rezeptliste';
+import Detailansicht from './components/Detailansicht';
 import './App.css'
 import {
     MDBContainer,
@@ -13,18 +16,14 @@ import {
     MDBNavbarBrand,
     MDBNavbarToggler,
     MDBNavbarNav,
-    MDBNavbarItem,
-    MDBNavbarLink,
     MDBIcon,
     MDBCollapse
 } from 'mdb-react-ui-kit';
-import EigeneRezepte from './components/EigeneRezepte';
-import Rezeptliste from './components/Rezeptliste';
+
 
 function App() {
 
     const [openNavSecond, setOpenNavSecond] = useState(false);
-
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState('');
     const [userId, setUserId] = useState(null);
@@ -77,7 +76,7 @@ function App() {
                     padding: '1rem',       // größerer Klickbereich
                     backgroundColor: 'rgba(255,255,255,0.2)', // leicht sichtbarer Hintergrund
                     borderRadius: '8px',      // runde Ecken
-                    border: '2px solid white',  // <- dauerhafte weiße Umrandung
+                    border: '2px solid white',  // dauerhafte weiße Umrandung
                     color: 'white'
                 }}
             >
@@ -101,7 +100,6 @@ function App() {
                     : <Nav.Link className="text-white" as={Link} to="/login" onClick={() => setOpenNavSecond(false)}>Login</Nav.Link>
                 }
             
-
             </MDBNavbarNav>
             </MDBCollapse>
         </MDBContainer>
@@ -124,7 +122,14 @@ function App() {
 
         <Route 
             path='/rezeptliste' 
-            element={<Rezeptliste/>}  
+            element={<Rezeptliste
+            />}  
+        />
+
+        <Route 
+            path='/detailansicht' 
+            element={<Detailansicht
+            />}  
         />
 
         <Route 
@@ -149,6 +154,12 @@ function App() {
                 setIsLoggedIn = {setIsLoggedIn}
                 setUserName = {setUserName}
                 userName = {userName} 
+            />}  
+        />
+
+        <Route 
+            path='/rezeptdetail/:id' 
+            element={<Detailansicht
             />}  
         />
 
