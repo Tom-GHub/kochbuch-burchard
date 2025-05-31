@@ -6,9 +6,6 @@ import Home from './components/Home';
 import Register from './components/Register';
 import Login from './components/Login';
 import Rezept from './components/Rezept';
-
-
-
 import './App.css'
 import {
     MDBContainer,
@@ -21,6 +18,8 @@ import {
     MDBIcon,
     MDBCollapse
 } from 'mdb-react-ui-kit';
+import EigeneRezepte from './components/EigeneRezepte';
+import Rezeptliste from './components/Rezeptliste';
 
 function App() {
 
@@ -79,7 +78,6 @@ function App() {
                     backgroundColor: 'rgba(255,255,255,0.2)', // leicht sichtbarer Hintergrund
                     borderRadius: '8px',      // runde Ecken
                     border: '2px solid white',  // <- dauerhafte weiße Umrandung
-                    borderRadius: '8px',
                     color: 'white'
                 }}
             >
@@ -90,9 +88,16 @@ function App() {
             
                 <Nav.Link className="text-white" as={Link} to="/" onClick={() => setOpenNavSecond(false)}>Home</Nav.Link>
                 <Nav.Link className="text-white" as={Link} to="/register" onClick={() => setOpenNavSecond(false)}>Registrierung</Nav.Link>
-                <Nav.Link className="text-white" as={Link} to="/rezept" onClick={() => setOpenNavSecond(false)}>Rezept</Nav.Link>
+                <Nav.Link className="text-white" as={Link} to="/rezept" onClick={() => setOpenNavSecond(false)}>Rezept schreiben</Nav.Link>
+                <Nav.Link className="text-white" as={Link} to="/rezeptliste" onClick={() => setOpenNavSecond(false)}>Übersicht</Nav.Link>
+
+                {isLoggedIn && (
+                        <Nav.Link className="text-white" as={Link} to="/eigenerezepte" onClick={() => setOpenNavSecond(false)}>Eigene Rezepte</Nav.Link>
+                    )
+                }
+
                 { isLoggedIn 
-                    ? <Nav.Link className="text-white"onClick={() => { handleLogout(); setOpenNavSecond(false); }}>Logout</Nav.Link>
+                    ? <Nav.Link className="text-white" onClick={() => { handleLogout(); setOpenNavSecond(false); }}>Logout</Nav.Link>
                     : <Nav.Link className="text-white" as={Link} to="/login" onClick={() => setOpenNavSecond(false)}>Login</Nav.Link>
                 }
             
@@ -103,24 +108,52 @@ function App() {
         </MDBNavbar>
 
         <Routes>
-        <Route path='/' element={<Home
-                        isLoggedIn = {isLoggedIn}
-                        userName={userName} />}  />
-        
-        <Route path='/register' element={<Register/>}  />
-        <Route path='/rezept' element={<Rezept/>}  />
 
-        <Route path='/login' element={<Login
-            isLoggedIn = {isLoggedIn}
-            setIsLoggedIn = {setIsLoggedIn}
-            setUserName = {setUserName}
-            userName = {userName} 
-        />}  />
+        <Route 
+            path='/' 
+            element={<Home
+                isLoggedIn = {isLoggedIn}
+                userName={userName} 
+            />}  
+        />
+        
+        <Route 
+            path='/register' 
+            element={<Register/>}  
+        />
+
+        <Route 
+            path='/rezeptliste' 
+            element={<Rezeptliste/>}  
+        />
+
+        <Route 
+            path='/rezept' 
+            element={<Rezept
+                userId={userId}
+            />}  
+        />
+
+        <Route 
+            path='/eigenerezepte' 
+            element={<EigeneRezepte
+                isLoggedIn={isLoggedIn}
+                userName={userName}     
+            />} 
+        />
+
+        <Route 
+            path='/login' 
+            element={<Login
+                isLoggedIn = {isLoggedIn}
+                setIsLoggedIn = {setIsLoggedIn}
+                setUserName = {setUserName}
+                userName = {userName} 
+            />}  
+        />
 
         </Routes>
         </>
     );
 }
-
-
 export default App;
