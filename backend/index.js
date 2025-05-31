@@ -8,13 +8,14 @@ import loginRouter from './routes/login.js';
 import rezeptRouter from './routes/rezept.js';
 import eigenerezepteRouter from './routes/eigenerezepte.js';
 import rezeptlisteRouter from './routes/rezeptliste.js';
+import detailRouter from './routes/rezeptdetail.js'
 
 import path from 'node:path';
 
 // Erstellt eine Express-App (den Server)
 export const app = express();
 
-// Add directory for uploaded static files. für Profilbild (statischen ordner anlegen?)
+
 app.use(express.static(
     path.join(import.meta.dirname, 'public')));
 
@@ -37,6 +38,7 @@ app.use('/', loginRouter);
 app.use('/', rezeptRouter);
 app.use('/', eigenerezepteRouter);
 app.use('/', rezeptlisteRouter);
+app.use('/', detailRouter);
 
 
 
