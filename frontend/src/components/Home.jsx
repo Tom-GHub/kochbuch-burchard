@@ -17,11 +17,11 @@ function Home( {isLoggedIn, userName} ) {
             {/* Begrüßungs-Überschrift mit dem Benutzernamen */}
             { isLoggedIn 
                 ? ( <h1>Willkommen {userName} </h1> ) 
-                : ( <h1>Hallo!</h1>)  
+                : ( <h1>Hallo! hier findest du viele leckere Rezepte.</h1>)  
             }
 
             {/* Fester Begrüßungstext */}
-            <p>Hier steht ein Text zur Begrüßung.</p>
+            <p>Packe ich hier die Rezeptlsite rein?.</p>
         </div>
         </>
     )

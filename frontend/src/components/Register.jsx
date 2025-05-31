@@ -1,9 +1,8 @@
-import { Form, Button } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { useState } from "react";
 import pizzaImage from '../assets/pizza.png'
 import { Link } from "react-router-dom";
 import {
-    MDBBtn,
     MDBContainer,
     MDBRow,
     MDBCol,
@@ -38,8 +37,6 @@ function Register() {
 
         // console.log(formData);  // debug
     };
-
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();

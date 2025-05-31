@@ -2,12 +2,12 @@
 import {MDBContainer, MDBCol, MDBRow, MDBBtn, MDBInput, MDBCard, MDBCardBody} from 'mdb-react-ui-kit';
 import { useEffect, useState } from "react";
 import pizzaLogin from '../assets/pizzaLogin.png'
-import { Form, Button } from "react-bootstrap";
+import {  Button } from "react-bootstrap";
 import { data, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 
 
-function Login( {isLoggedIn, setIsLoggedIn, userName, setUserName} ) {
+function Login( { setIsLoggedIn, setUserName} ) {
 
     const [message, setMessage] = useState('');
 

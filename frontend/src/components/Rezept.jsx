@@ -1,12 +1,9 @@
-import { Form, Button, Alert, Container } from 'react-bootstrap';
+import {  Button } from 'react-bootstrap';
 import {
-    MDBBtn,
     MDBContainer,
-    MDBRow,
     MDBCol,
     MDBCard,
     MDBCardBody,
-    MDBCardImage,
     MDBInput,
     MDBTextArea,
     MDBFile 
@@ -17,7 +14,6 @@ import { useState } from 'react';
 
 
 function Rezept( {} ) { 
-
 
     // behandelt formfelder des rezepts
     const [formData, setFormData] = useState({
@@ -44,7 +40,7 @@ function Rezept( {} ) {
         // token hinzufügen im token ist userID - die api kann hieraus die id auslesen -> das passiert in der middleware
         const token = localStorage.getItem("token");
 
-        // Add formData object to send picture to server
+        // FormData-Objekt erstellen, damit das Bild zum Server geschickt werden kann
         const formDataObj = new FormData();
         formDataObj.append('titel', formData.titel);
         formDataObj.append('zutatenliste', formData.zutatenliste);
@@ -95,7 +91,6 @@ function Rezept( {} ) {
 
                 <MDBCard className='text-black m-5' style={{borderRadius: '25px'}}>
                     <MDBCardBody>
-                    {/* <MDBRow> */}
                         <MDBCol md='10' lg='12' className='order-2 order-lg-1 d-flex flex-column align-items-center'>
 
                         <p className="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">Schreibe hier dein Rezept</p>
@@ -204,10 +199,6 @@ function Rezept( {} ) {
                             
                         </div>
                         </MDBCol>
-
-
-
-                    {/* </MDBRow> */}
                     </MDBCardBody>
                 </MDBCard>
             </form>
