@@ -19,6 +19,7 @@ import {
     MDBIcon,
     MDBCollapse
 } from 'mdb-react-ui-kit';
+import RezeptBearbeiten from './components/RezeptBearbeiten';
 
 
 function App() {
@@ -87,13 +88,15 @@ function App() {
             
                 <Nav.Link className="text-white" as={Link} to="/" onClick={() => setOpenNavSecond(false)}>Home</Nav.Link>
                 <Nav.Link className="text-white" as={Link} to="/register" onClick={() => setOpenNavSecond(false)}>Registrierung</Nav.Link>
-                <Nav.Link className="text-white" as={Link} to="/rezept" onClick={() => setOpenNavSecond(false)}>Rezept schreiben</Nav.Link>
                 <Nav.Link className="text-white" as={Link} to="/rezeptliste" onClick={() => setOpenNavSecond(false)}>Übersicht</Nav.Link>
 
                 {isLoggedIn && (
-                        <Nav.Link className="text-white" as={Link} to="/eigenerezepte" onClick={() => setOpenNavSecond(false)}>Eigene Rezepte</Nav.Link>
-                    )
-                }
+                    <Nav.Link className="text-white" as={Link} to="/rezept" onClick={() => setOpenNavSecond(false)}>Rezept schreiben</Nav.Link>
+                )}
+
+                {isLoggedIn && (
+                    <Nav.Link className="text-white" as={Link} to="/eigenerezepte" onClick={() => setOpenNavSecond(false)}>Eigene Rezepte</Nav.Link>
+                )}
 
                 { isLoggedIn 
                     ? <Nav.Link className="text-white" onClick={() => { handleLogout(); setOpenNavSecond(false); }}>Logout</Nav.Link>
@@ -160,6 +163,12 @@ function App() {
         <Route 
             path='/rezeptdetail/:id' 
             element={<Detailansicht
+            />}  
+        />
+
+        <Route 
+            path='/bearbeiten/:id' 
+            element={<RezeptBearbeiten
             />}  
         />
 
