@@ -37,6 +37,14 @@ router.post('/api/register', async (req, res) => {
         });
         }
 
+        // Prüfen ob der Benutzername schon in der Datenbank ist
+        const checkName = await conn.query('SELECT * FROM user WHERE username = ?', [username]);
+        if ( checkName.length > 0 ) {
+            return res.status(401).json({
+                message: 'Benutzername existiert bereites'
+            });
+        }
+
 
 
         // Passwort hashen
