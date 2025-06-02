@@ -10,6 +10,7 @@ import {
 }
 from 'mdb-react-ui-kit';
 
+// isLoggedIn übergeben um bearbeiten und löschen button anzeigen zu lassen
 function Rezeptliste() { 
 
     const [rezepte, setRezepte] = useState([]);
@@ -17,19 +18,17 @@ function Rezeptliste() {
     useEffect(() => {
         // Rezepte vom Backend laden
         const fetchRezepte = async () => {
-            const token = localStorage.getItem('token');
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/api/rezeptliste`, {
                     method: 'GET',
                     headers: {
-                        'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     }
                 });
                 const data = await response.json();
 
                 // Was im Frontend von der API ankommt
-                // console.log("API Response:", data);
+                console.log("Rezeptliste.jsx - data: ", data);
 
                 // Überprüfen ob ein Array als Antwort vom Backend kommt
                 if (Array.isArray(data) ) {
@@ -43,11 +42,8 @@ function Rezeptliste() {
             }
         };
 
-
         fetchRezepte();
     }, []);
-
-
 
 
 
@@ -77,7 +73,7 @@ function Rezeptliste() {
                                                     {rezept.ingredients}
                                                 </p>
                                                 <Link to={`/rezeptdetail/${rezept.id}`} className="btn btn-primary btn-sm mt-2">
-                                                    Ansehen
+                                                    Details ansehen
                                                 </Link>
                                             </MDBCardBody>
                                         </MDBCard>

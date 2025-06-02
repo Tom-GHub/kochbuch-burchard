@@ -63,7 +63,7 @@ function Rezept( {} ) {
 
         if(res.ok) {
             alert("Rezept wurde erstellt");
-            console.log("jsonData: ", jsonData);
+            console.log("Rezept.jsx - jsonData: ", jsonData);
         } else {
         
             console.log("Fehler bei dem erstellen", jsonData.message);
