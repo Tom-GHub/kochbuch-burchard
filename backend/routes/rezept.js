@@ -10,7 +10,6 @@ const router = express.Router(); //erstellt route objekt
 // middleware wird in zeile 8 mit eingefügt -> damit zugriff auf req.user (user ist im token in der login.js)
 router.post('/api/rezept', authMiddleware, upload.single('picture'), async (req, res) => {
     
-    console.log("rezept.js - req.body: ", req.body);
     
     const user_id = req.user.id;
     const { titel, zutatenliste, zubereitung } = req.body;

@@ -1,11 +1,10 @@
 import express from 'express';
-import authMiddleware from '../middleware/auth.js';
 import getDatabaseConnection from '../db.js';
 
 const router = express.Router(); //erstellt route objekt
 
 
-router.get('/api/rezeptliste', authMiddleware, async (req, res) => {
+router.get('/api/rezeptliste', async (req, res) => {
     
 
     const conn = await getDatabaseConnection();
@@ -14,6 +13,8 @@ router.get('/api/rezeptliste', authMiddleware, async (req, res) => {
             
             // mariaDB liefert bereits ein Array zurück, deshalb nur const rezeptResult und nicht [rezeptResult]
             // conn.query(...) liefert nicht [rows, fields] wie bei mysql2, sondern direkt ein Array oder ein einzelnes Objekt
+
+            // SQL abfrage anpassen, dass nur Rezepte mit published 1 (true) angezeigt werden / where published = 1
             const rezeptResult = await conn.query(
             `SELECT id, title, image, ingredients
                 FROM recipe`
@@ -24,8 +25,8 @@ router.get('/api/rezeptliste', authMiddleware, async (req, res) => {
             }
 
             // Log für rezeptResult-Antwort
-            console.log('API gibt zurück: ', rezeptResult);
-            // Antwort mit Profildaten
+            // console.log('rezeptliste.js - rezeptResult: ', rezeptResult);
+            // Antwort mit den Rezepten aller Nutzer
             res.json(rezeptResult); 
     
         } catch (error) {

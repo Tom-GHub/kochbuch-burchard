@@ -54,7 +54,7 @@ router.post('/api/login', async (req, res) => {
         {expiresIn: '400h' }
     );
     
-    res.json( { token, userID: user.id, username: user.username });
+    res.json( { token, userID: user.id, username: user.username }); // Daten die als Antwort zu dem Client mitgeschickt werden
 });
 
 export default router;
