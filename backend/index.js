@@ -12,18 +12,19 @@ import detailRouter from './routes/rezeptdetail.js'
 
 import path from 'node:path';
 
-// Erstellt eine Express-App (den Server)
+// Erstellt eine Express-App (den Webserver)
 export const app = express();
 
-
+// Statische Dateien (z. B. Bilder) aus dem Ordner 'public' verfügbar machen
 app.use(express.static(
     path.join(import.meta.dirname, 'public')));
 
-// Middleware, um JSON-Daten aus dem Request-Body zu lesen
+// Middleware: Wandelt eingehende JSON-Daten in JavaScript-Objekte um
+// (wichtig für POST/PUT/PATCH-Requests mit JSON-Daten)
 app.use(express.json()); 
 
 
-// Aktiviert CORS, damit Anfragen vom Frontend (React) akzeptiert werden
+// Aktiviert CORS (Cross-Origin Resource Sharing), damit das Frontend (z. B. React) Anfragen senden darf
 app.use(cors({
     origin:[
         'http://fi.mshome.net:3000',
@@ -31,7 +32,7 @@ app.use(cors({
     credentials: true // Erlaubt das Senden von Cookies, falls benötigt
 }));
 
-// Route zu Home (muss nach app.use/cors... stehen)
+// Verknüpft alle definierten Router mit der App
 app.use('/', homeRouter);
 app.use('/', registerRouter);
 app.use('/', loginRouter);
@@ -41,12 +42,10 @@ app.use('/', rezeptlisteRouter);
 app.use('/', detailRouter);
 
 
-
-
-
+// Liest den Port aus den Umgebungsvariablen (in .env definiert)
 const PORT = process.env.PORT;
 
-// Start server
+// Startet den Server und gibt eine Info aus, ob erfolgreich oder nicht
 const server = app.listen(PORT, () => {
     console.log(`Server läuft auf http://fi.mshome.net:${PORT}`);
 }).on("error", (err) => {
@@ -55,5 +54,5 @@ const server = app.listen(PORT, () => {
     } else {
         console.error("❌ Serverfehler:", err);
     }
-    process.exit(1);
+    process.exit(1);    // Beendet den Prozess bei Fehlern
 });
