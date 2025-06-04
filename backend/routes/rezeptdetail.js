@@ -4,23 +4,27 @@ import getDatabaseConnection from '../db.js';
 
 const router = express.Router(); //erstellt route objekt
 
-
+/**
+ * GET /api/rezeptdetail/:id
+ * Holt alle Informationen zu einem einzelnen Rezept anhand der übergebenen Rezept-ID.
+ * Beispiel: /api/rezeptdetail/5 liefert das Rezept mit der ID 5.
+ */
 router.get('/api/rezeptdetail/:id', async (req, res) => {
     
     const conn = await getDatabaseConnection();
 
         try {
+            // Holt das Rezept mit der übergebenen ID aus der Datenbank
             const rezeptResult = await conn.query(
-            `SELECT * FROM recipe WHERE id = ?`, [req.params.id]
+                `SELECT * FROM recipe WHERE id = ?`, 
+                [req.params.id] // ID kommt aus der URL
             );
-            // console.log('rezeptdetail.js - test', rezeptResult );
-            // console.log('rezeptdetail - params: ', req.params);
-            // Prüfen ob was vorhanden ist
-            // console.log('rezeptdetail.js - rezeptResult: ', rezeptResult);
+
+            // Prüfen ob ein Rezept gefunden wurde
             if (rezeptResult.length === 0) {
                 return res.status(404).json({ error: 'Rezept nicht gefunden' });
             }
-            // Speichern der ersten Stelle des Arrays
+            // Holt das erste (und einzige) Rezept aus dem Ergebnis
             const rezept = rezeptResult[0];
             
             // Log für rezeptResult-Antwort
@@ -28,7 +32,7 @@ router.get('/api/rezeptdetail/:id', async (req, res) => {
 
             res.setHeader('Content-Type', 'application/json');
             
-            // Antwort mit dem Rezept was auf Index 0 von rezeptResult ist
+            // Gibt das Rezept als JSON-Antwort zurück
             res.status(200).json(rezept); 
     
         } catch (error) {

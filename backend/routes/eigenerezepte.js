@@ -3,19 +3,27 @@ import authMiddleware from '../middleware/auth.js';
 import getDatabaseConnection from '../db.js';
 import multer from 'multer';
 
+// Multer konfigurieren - speichert Uploads im 'public/uploads/' Ordner
 const upload = multer({ dest: 'public/uploads/' });
-const router = express.Router(); //erstellt route objekt
+const router = express.Router(); // Erstellt ein Router-Objekt für diese Routen
 
 
-// isPublished?
+/**
+ * Veröffentlichen oder Zurückziehen eines Rezepts
+ * Route: PUT /api/rezeptveroeffentlichen/:id
+ * Zweck: Setzt das Feld "published" eines Rezepts auf true/false
+ * Zugriff: Nur eingeloggte Nutzer
+ */
 router.put('/api/rezeptveroeffentlichen/:id', authMiddleware, async (req, res) => {
-    const { id } = req.params;
 
-    const { isPublished } = req.body;
+    const { id } = req.params;   // Rezept-ID aus der URL
+    const { isPublished } = req.body;   // Neuer Veröffentlichungsstatus aus dem Request-Body
+
     console.log('eigenerezepte.js - req.bod: ', req.body);
 
     const conn = await getDatabaseConnection();
     try {
+        // Aktualisiert den published-Status in der Datenbank
         await conn.query(
             `UPDATE recipe 
             SET published = ?
@@ -28,17 +36,21 @@ router.put('/api/rezeptveroeffentlichen/:id', authMiddleware, async (req, res) =
         console.error('Fehler beim Aktualisieren des Rezeptes:', error.message);
         res.status(500).json({ error: 'Fehler beim Aktualisieren des Rezeptes' });
     } finally {
-        conn.release();
+        conn.release(); // Datenbankverbindung immer freigeben
     }
 });
 
-// PUT-Route zum bearbeiten (sql alter where rezeptID = userID ?)
+/**
+ * Rezept bearbeiten (inkl. optionalem Bild-Upload)
+ * Route: PUT /api/rezeptbearbeiten/:id
+ * Zweck: Ändert Titel, Zutaten, Zubereitung und ggf. das Bild
+ * Zugriff: Nur eingeloggte Nutzer (authMiddleware)
+ */
 router.put('/api/rezeptbearbeiten/:id', authMiddleware, upload.single('image'), async (req, res) => {
-    const { id } = req.params;
-    const user_id = req.user.id;
-    const { titel, zutatenliste, zubereitung } = req.body;
-    // Bildname aus Multer übernehmen (falls vorhanden)
-    const image = req.file ? req.file.filename : null;
+    const { id } = req.params;      // Rezept-ID
+    const user_id = req.user.id;    // User-ID aus der Authentifizierung
+    const { titel, zutatenliste, zubereitung } = req.body;  // Neue Rezeptdaten
+    const image = req.file ? req.file.filename : null;      // Neues Bild (falls hochgeladen)
 
     console.log('UPDATE Rezept mit:', {
     titel,
@@ -51,7 +63,7 @@ router.put('/api/rezeptbearbeiten/:id', authMiddleware, upload.single('image'), 
     const conn = await getDatabaseConnection();
     try {
         if (req.file) {
-            // neues Bild hochgeladen → Bild auch aktualisieren
+            // Falls ein neues Bild hochgeladen wurde -> alle Felder inkl. Bild aktualisieren
             await conn.query(
                 `UPDATE recipe
                 SET title = ?, ingredients = ?, instructions = ?, image = ?
@@ -59,7 +71,7 @@ router.put('/api/rezeptbearbeiten/:id', authMiddleware, upload.single('image'), 
                 [titel, zutatenliste, zubereitung, req.file.filename, id, user_id]
             );
             } else {
-            // kein neues Bild → Bild bleibt unverändert
+            // Kein neues Bild -> nur die anderen Felder aktualisieren
             await conn.query(
                 `UPDATE recipe
                 SET title = ?, ingredients = ?, instructions = ?
@@ -78,36 +90,46 @@ router.put('/api/rezeptbearbeiten/:id', authMiddleware, upload.single('image'), 
 });
 
 
-// DELETE-Route (sql delete from recipe where rezptID = rezeptID ?)
+/**
+ * Rezept löschen
+ * Route: DELETE /api/eigenerezepte/:id
+ * Zweck: Löscht ein Rezept anhand seiner ID
+ * Zugriff: Nur eingeloggte Nutzer
+ */
 router.delete('/api/eigenerezepte/:id', authMiddleware, async (req, res) => {
         const conn = await getDatabaseConnection();
         const rezeptID = req.params.id;
         
         try {
-                const rezeptLöschen = await conn.query(
-                    // 'DELETE FROM recipe WHERE id = ?', [rezeptID]
+            // Rezept aus der Datenbank löschen
+            await conn.query(
                 'DELETE FROM recipe WHERE id = ?', [rezeptID]
-                );
+            );
     
-                // Log für rezeptResult-Antwort
-                // console.log('eigenerezepte.js - userRezeptResult: ', userRezeptResult);
-                // Antwort mit eigenen Rezepten
-                res.status(200).json({ message: 'Rezept erfolgreich gelöscht' });
+            // Log für rezeptResult-Antwort
+            // console.log('eigenerezepte.js - userRezeptResult: ', userRezeptResult);
+            // Antwort mit eigenen Rezepten
+            res.status(200).json({ message: 'Rezept erfolgreich gelöscht' });
         
-            } catch (error) {
-                console.error('Fehler beim Löschen der Rezepte:', error);
-                res.status(500).json({ error: 'Fehler beim Löschen der Rezepte' });
-            } finally {
-                conn.release();
-            }
+        } catch (error) {
+            console.error('Fehler beim Löschen der Rezepte:', error);
+            res.status(500).json({ error: 'Fehler beim Löschen der Rezepte' });
+        } finally {
+            conn.release();
+        }
 })
 
-// eine GET-Route die alles aus der Datenbank abfragt was zu dem user mit der id der Rezepte gehört 
+/**
+ * Eigene Rezepte abrufen
+ * Route: GET /api/eigenerezepte
+ * Zweck: Gibt alle Rezepte eines eingeloggten Nutzers zurück
+ */
 router.get('/api/eigenerezepte', authMiddleware, async (req, res) => {
         const conn = await getDatabaseConnection();
         const user_id = req.user.id;
         
             try {
+                // Alle Rezepte des Users aus der Datenbank abfragen
                 const userRezeptResult = await conn.query(
                 `SELECT id, title, image, ingredients, published
                     FROM recipe
