@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Nav, Button } from "react-bootstrap"
 import { Link } from "react-router-dom"
+import { data, useParams } from 'react-router-dom';
 import {
     MDBContainer,
     MDBRow,
@@ -12,19 +13,57 @@ import {
 }
 from 'mdb-react-ui-kit';
 
-// button zum bearbeiten erstellen
-// wenn auf button klicken -> neu Komponente die geöffnet wird -> RezeptBearbeiten
-
 
 function EigeneRezepte( {isLoggedIn, userName} ) { 
 
-    const [userRezepte, setUserRezepte] = useState([]);
-    // console.log('EigeneRezepte.jsx - userRezepte - ', userRezepte);
 
-    // handleUpdate zum Bearbeiten -> PUT-Route im backend
+    const [userRezepte, setUserRezepte] = useState([]);
+    console.log('EigeneRezepte.jsx - userRezepte - ', userRezepte);
 
 
     // handlePublished -> PUT - fetch auf rezept id ( in SQL Abfrage update von published von 0 zu 1 zum veröffentlichen )
+    const handlePublished = async (rezeptId, aktuellerZusatnd) => {
+
+        const token = localStorage.getItem("token");
+
+        // Variable für den Zustandswechsel -> wenn published true ist, wird der neue Zustand auf 0 gesetzt, ansonsten 1
+        let neuerZustand;
+        if( aktuellerZusatnd === 1 ) {
+            neuerZustand = 0;
+        } else {
+            neuerZustand = 1;
+        }
+
+    try {
+            const res = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/api/rezeptveroeffentlichen/${rezeptId}`, {
+                method: "PUT",
+                headers: { 
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({isPublished: neuerZustand}), // isPublished wird an backend übergeben
+            });
+
+            const jsonData = await res.json();
+
+        if(res.ok) {
+            // Update im Frontend (Status in userRezepte ändern)
+            setUserRezepte(prevRezepte =>
+                prevRezepte.map(rezept =>
+                    rezept.id === rezeptId ? { ...rezept, published: neuerZustand } : rezept
+                )
+            );
+            console.log("RezeptBearbeiten.jsx - handlePublished jsonData: ", jsonData);
+
+        } else {
+        
+            console.log("Fehler bei dem Veröffentlichen", jsonData.message);
+        }
+        } catch(err) {
+            console.error("Fehler: ", err);
+        }
+    };
+
 
     useEffect(() => {
         // Rezepte vom Backend laden
@@ -59,8 +98,6 @@ function EigeneRezepte( {isLoggedIn, userName} ) {
     }, []);
 
 
-    // woher bekomme ich die id von dem rezept zum löschen? brauche ich die überhaupt?
-    // wenn der button gedrück wird soll handleDelete ausgeführt werden muss ich dann userRezept benutzen?
     const handleDelete = async (rezeptId) => {
         
         // Fenster zum Bestätigen des Löschens
@@ -99,42 +136,60 @@ return (
             <MDBCard className='text-black m-5' style={{ borderRadius: '25px' }}>
                 <MDBCardBody>
                     <MDBRow>
-                        <MDBCol lg='12' className='d-flex flex-column align-items-center'>
+                        <MDBCol lg='12' 
+                                className='d-flex flex-column align-items-center justify-content-center'>
+
                             {/* Begrüßungs-Überschrift mit dem Benutzernamen */}
                             { isLoggedIn && (
-                                <h2 className="mb-5">Hallo {userName} hier kannst du deine Rezepte ansehen und verwalten.</h2> 
+                                <h3 className="mb-5">Hallo {userName} hier kannst du deine Rezepte ansehen und verwalten.</h3> 
                             )}
-                            <MDBRow className="w-100 g-4">
+                            <MDBRow className="w-100 g-4 justify-content-center">
                                 {/* .map() wandelt ein Array von Daten in ein Array von UI-Komponenten um. */}
                                 {userRezepte.map((rezept) => (
                                     <MDBCol md="6" lg="4" key={rezept.id}>
                                         <MDBCard className="h-100">
                                             {rezept.image && (
                                                 <MDBCardImage
-                                                    src={`http://fi.mshome.net:3001/uploads/${rezept.image}`}
+                                                    src={`${import.meta.env.VITE_API_SERVER_URL}/uploads/${rezept.image}`}
                                                     position='top'
                                                     alt={rezept.title}
+                                                    className="card-img-top fixed-image-size"
                                                 />
                                             )}
+                                            
                                             <MDBCardBody>
                                                 <h5 className="fw-bold">{rezept.title}</h5>
                                                 <p className="text-muted" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                     {rezept.ingredients}
                                                 </p>
-                                                <Link to={`/rezeptdetail/${rezept.id}`} className="btn btn-primary btn-sm mt-2">
-                                                    Details ansehen
-                                                </Link>
 
-                                                <Link to={`/bearbeiten/${rezept.id}`} className="btn btn-primary btn-sm mt-2">
-                                                    Rezept bearbeiten
-                                                </Link>
+                                                <div className="d-flex flex-column align-items-center gap-2 mt-5"
+                                                        style={{maxWidth: '200px', margin: '0 auto'}}>
+                                                    <Link to={`/rezeptdetail/${rezept.id}`} className="btn btn-update btn-sm w-100">
+                                                        Anzeigen
+                                                    </Link>
 
-                                                <Button 
-                                                    className="btn btn-secondary btn-sm mt-2"
-                                                    onClick={() => handleDelete(rezept.id)}>
-                                                    Rezept löschen
-                                                </Button>
+                                                    <Link to={`/bearbeiten/${rezept.id}`} className="btn btn-update btn-sm w-100">
+                                                        Bearbeiten
+                                                    </Link>
+
+                                                    <Button 
+                                                    // onClick braucht die isPublished funktion die onToggle übergeben bekommt?
+                                                        onClick={() => handlePublished(rezept.id, rezept.published)}
+                                                        
+                                                        className={`btn-sm w-100 ${rezept.published === 1 ? 'btn-unpublish' : 'btn-publish'}`}>
+                                                        {/* rezept.published ist der aktuelle Zustand */}
+                                                        {rezept.published == 1 ? 'Zurückziehen' : 'Veröffentlichen'}
+                                                    </Button>
+
+                                                    <Button 
+                                                        className="btn btn-light border border-dark btn-sm w-100"
+                                                        onClick={() => handleDelete(rezept.id)}>
+                                                        Löschen
+                                                    </Button>
+                                                </div>
                                             </MDBCardBody>
+                                            
                                         </MDBCard>
                                     </MDBCol>
                                 ))}
