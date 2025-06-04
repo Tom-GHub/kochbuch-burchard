@@ -1,6 +1,6 @@
 import {  Button } from 'react-bootstrap';
 import { useEffect, useState } from "react"
-import { data, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
     MDBContainer,
     MDBCol,
@@ -12,32 +12,35 @@ import {
 }
 from 'mdb-react-ui-kit';
 
-
-
-
+// RezeptBearbeiten-Komponente - Ermöglicht das Bearbeiten bestehender Rezepte
 function RezeptBearbeiten( {} ) { 
 
-const { id } = useParams(); // bekommt Rezept-ID aus der URL
-const [rezept, setRezept] = useState(null);
-const [loading, setLoading] = useState(true);
-const [error, setError] = useState(null);
-const [image, setImage] = useState(null);
-// behandelt formfelder des rezepts
+const { id } = useParams(); // Holt die Rezept-ID aus der URL
+
+// Zustände für:
+const [rezept, setRezept] = useState(null);     // Das originale Rezept vom Server
+const [loading, setLoading] = useState(true);   // Ladezustand
+const [error, setError] = useState(null);       // Fehlermeldung
+const [image, setImage] = useState(null);       // Das hochgeladene Bild
+
+// Formulardaten für das bearbeitete Rezept (Titel, Zutaten, Zubereitung)
 const [formData, setFormData] = useState({
     titel: '',
     zutatenliste: '',
     zubereitung: '',
 });
 
+// Lädt das Rezept beim ersten Rendern und wenn sich die ID ändert
 useEffect( () => {
+    // Auth-Token aus dem Browser-Storage (localStorage)
     const token = localStorage.getItem('token');
     const fetchRezept = async () => {
         try {
+            // Holt Rezeptdaten vom Server
             const response = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/api/rezeptdetail/${id}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    
                 }
             });
 
@@ -45,66 +48,68 @@ useEffect( () => {
             console.log('RezeptBearbeiten.jsx - data: ', data);
 
             if( response.ok ) {
-                setRezept(data); // gesamt-Rezept speichern (optional, z.B. für Bild)
+                // Daten aus der API in die Zustände übertragen
+                setRezept(data); // Komplettes Rezept-Objekt (z.B. für Bild)
                 setFormData({
-                    titel: data.title || '',
+                    titel: data.title || '',                // Fallback auf leeren String falls undefined   
                     zutatenliste: data.ingredients || '',
                     zubereitung: data.instructions || ''
-                    // published: data.published || ''
                 });
-                console.log("Form data after set:", {
+                console.log("RezeptBearbeiten.jsx - Form data after set:", {
                     titel: data.title || '',
                     zutatenliste: data.ingredients || '',
                     zubereitung: data.instructions || ''
                     });
                 console.log('setRezept', rezept);
 
-                setImage(data.image || null);
-                if (!response.ok) {
-                    setError(data.message || 'Fehler beim Laden');
-                }
+                setImage(data.image || null);   // Bild setzen oder null falls keins vorhanden
+            } else {
+                setError(data.message || 'Fehler beim Laden des Rezepts');
             }
         } catch(err) {
             console.error("Fehler beim Laden des Rezepts: ", err);
         } finally {
-            setLoading(false);
+            setLoading(false);  // Ladevorgang abgeschlossen
         }
     };
 
     fetchRezept();
-}, [id]);
+}, [id]);   // Wenn sich die Rezept-ID ändert, wird neu geladen
 
 
-    // Jede veränderung in den Form-Feldern wird erfasst und mit dazu gepackt, also Buchstabe für Buchstabe wird ein String gebaut.
+    // Wird bei jeder Änderung in einem Eingabefeld aufgerufen und aktualisiert den State
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData( (prev) => ({
-            ...prev,
-            [name]: value,
+            ...prev,        // vorherige Werte beibehalten
+            [name]: value,  // neues Feld überschreiben
         }));
         // console.log('handleChange - name:, value ',name, value);
     };
 
+    // Aktualisiert das Rezept auf dem Server
     const handleUpdate = async (e) => {
-        e.preventDefault();
+        e.preventDefault(); // Verhindert Neuladen der Seite beim Absenden
 
         // token hinzufügen im token ist userID - die api kann hieraus die id auslesen -> das passiert in der middleware
         const token = localStorage.getItem("token");
 
-        // FormData-Objekt erstellen, damit das Bild zum Server geschickt werden kann
+        // FormData wird genutzt, um auch Bilder mitzusenden
         const formDataObj = new FormData();
         formDataObj.append('titel', formData.titel);
         formDataObj.append('zutatenliste', formData.zutatenliste);
         formDataObj.append('zubereitung', formData.zubereitung);
         if (image) {
-            formDataObj.append('image', image);
+            formDataObj.append('image', image); // neues Bild hinzufügen, falls vorhanden
         }
         console.log('RezeptBearbeiten.jsx - formDataObj', formDataObj );
         try {
+            // Sendet aktualisierte Daten an den Server
             const res = await fetch(`${import.meta.env.VITE_API_SERVER_URL}/api/rezeptbearbeiten/${id}`, {
                 method: "PUT",
                 headers: { 
                     "Authorization": `Bearer ${token}`
+                    // Content-Type wird bei FormData automatisch gesetzt
                 },
                 body: formDataObj,
             });
@@ -112,17 +117,19 @@ useEffect( () => {
             const jsonData = await res.json();
 
         if(res.ok) {
-            alert("Rezept wurde erstellt");
+            alert("Rezept wurde erfolgreich aktualisiert");
             console.log("RezeptBearbeiten.jsx - jsonData: ", jsonData);
         } else {
-        
-            console.log("Fehler bei dem erstellen", jsonData.message);
+            alert(jsonData.message || "Fehler beim Speichern der Änderungen");
+            console.log("Fehler beim Aktualisieren", jsonData.message);
         }
         } catch(err) {
             console.error("Fehler: ", err);
+            alert("Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.");
         }
     };
 
+    // Setzt das Formular auf die ursprünglichen Werte zurück
     const handleReset = () => {
         if (window.confirm("Willst du wirklich abbrechen? Alle Eingaben gehen verloren.")) {
         setFormData({
@@ -130,11 +137,12 @@ useEffect( () => {
             zutatenliste: rezept?.ingredients || '',
             zubereitung: rezept?.instructions || ''
         });
-        document.getElementById('imageUpload').value = '';
-        setImage(rezept?.image || null);
+        document.getElementById('imageUpload').value = '';  // Dateiauswahl zurücksetzen
+        setImage(rezept?.image || null);                    // Originalbild wiederherstellen
         }
     };
 
+    // Lade- und Fehlerzustände
     if (loading) return <p>🔄 Rezept wird geladen...</p>;
     if (error) return <p>❌ Fehler: {error}</p>;
     if (!rezept) return <p>⚠️ Kein Rezept gefunden.</p>;
@@ -150,31 +158,33 @@ useEffect( () => {
 
                         <p className="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">Schreibe hier dein Rezept</p>
 
+                        {/* Titel und Bild-Upload */}
                         <div className='d-flex flex-row gap-3 w-100'>
                             <div className="mb-4 w-100">
-                                    <MDBInput 
-                                        label='Titel' 
-                                        id='form1' 
-                                        type='text' 
-                                        className='w-100'
-                                        name="titel"
-                                        value={formData.titel}
-                                        onChange={handleChange}
-                                        placeholder="Wie soll das Rezept heißen?"
-                                        />
+                                <MDBInput 
+                                    label='Titel' 
+                                    id='form1' 
+                                    type='text' 
+                                    className='w-100'
+                                    name="titel"
+                                    value={formData.titel}
+                                    onChange={handleChange}
+                                    placeholder="Wie soll das Rezept heißen?"
+                                />
                             </div>
-                        <div className="d-flex flex-column w-100">
-                            <MDBFile 
-                            id="imageUpload"
-                            name="image"
-                            accept="image/*"
-                            className="w-100"
-                            onChange={e => setImage(e.target.files[0])}
-                            />
-                            <label htmlFor="imageUpload" className="form-label ms-1">Bild hochladen</label>
-                        </div>
+                            <div className="d-flex flex-column w-100">
+                                <MDBFile 
+                                    id="imageUpload"
+                                    name="image"
+                                    accept="image/*"
+                                    className="w-100"
+                                    onChange={e => setImage(e.target.files[0])} // Erstes ausgewähltes Bild speichern
+                                />
+                                <label htmlFor="imageUpload" className="form-label ms-1">Bild hochladen</label>
+                            </div>
                         </div>
 
+                        {/* Zutaten und Zubereitung */}
                         <div className='d-flex flex-row gap-3 w-100'>
                             <div className="mb-4 w-100">
                                 <MDBTextArea 
@@ -187,7 +197,7 @@ useEffect( () => {
                                     value={formData.zutatenliste}
                                     onChange={handleChange}
                                     placeholder="Schreibe hier deine Zutaten auf"
-                                    />
+                                />
                             </div>
 
                             <div className="mb-4 w-100">
@@ -201,10 +211,11 @@ useEffect( () => {
                                         value={formData.zubereitung}
                                         onChange={handleChange}
                                         placeholder="Wie wird das Gericht zubereitet?"
-                                        />
+                                    />
                             </div>
                         </div>
                         
+                        {/* Buttons */}
                         <div className="w-100 mb-3">
                             <Button type="button" 
                                     onClick={handleReset}
@@ -217,7 +228,9 @@ useEffect( () => {
                                         boxShadow: 'none',       // kein Schatten beim Klicken
                                         outline: 'none',          // kein Outline beim Klicken
                                         transform: 'none',
-                                    }}>Abbrechen
+                                    }}
+                                >
+                                    Änderungen verwerfen
                             </Button>
                         
                         </div>
@@ -233,7 +246,9 @@ useEffect( () => {
                                         boxShadow: 'none',       // kein Schatten beim Klicken
                                         outline: 'none',          // kein Outline beim Klicken
                                         transform: 'none'
-                                    }}>Speichern
+                                    }}
+                                >
+                                    Änderungen speichern
                             </Button>
                             
                         </div>
