@@ -16,8 +16,9 @@ router.get('/api/rezeptliste', async (req, res) => {
 
             // SQL abfrage anpassen, dass nur Rezepte mit published 1 (true) angezeigt werden / where published = 1
             const rezeptResult = await conn.query(
-            `SELECT id, title, image, ingredients
-                FROM recipe`
+            `SELECT id, title, image, ingredients, published
+                FROM recipe
+                WHERE published = 1`
             );
             // Wenn kein Profil gefunden wurde
             if (rezeptResult.length === 0) {
