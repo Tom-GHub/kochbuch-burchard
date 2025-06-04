@@ -55,26 +55,29 @@ function Rezeptliste() {
                         <MDBCol lg='12' className='d-flex flex-column align-items-center'>
                             <p className="text-center h2 fw-bold mb-5">Leckere Rezepte!</p>
 
-                            <MDBRow className="w-100 g-4">
+                            <MDBRow className="w-100 g-4 justify-content-evenly">
                                 {/* .map() wandelt ein Array von Daten in ein Array von UI-Komponenten um. */}
                                 {rezepte.map((rezept) => (
                                     <MDBCol md="6" lg="4" key={rezept.id}>
                                         <MDBCard className="h-100">
                                             {rezept.image && (
                                                 <MDBCardImage
-                                                    src={`http://fi.mshome.net:3001/uploads/${rezept.image}`}
+                                                    src={`${import.meta.env.VITE_API_SERVER_URL}/uploads/${rezept.image}`}
                                                     position='top'
                                                     alt={rezept.title}
+                                                    className="card-img-top fixed-image-size"
                                                 />
                                             )}
                                             <MDBCardBody>
                                                 <h5 className="fw-bold">{rezept.title}</h5>
                                                 <p className="text-muted" style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                    {rezept.ingredients}
+                                                
                                                 </p>
-                                                <Link to={`/rezeptdetail/${rezept.id}`} className="btn btn-primary btn-sm mt-2">
-                                                    Details ansehen
+                                                <div className="d-flex flex-column align-items-center gap-2 mt-5">
+                                                <Link to={`/rezeptdetail/${rezept.id}`} className="btn btn-update btn-sm w-100">
+                                                    Rezept anzeigen
                                                 </Link>
+                                                </div>
                                             </MDBCardBody>
                                         </MDBCard>
                                     </MDBCol>

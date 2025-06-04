@@ -63,7 +63,7 @@ if (!rezept) return <p>⚠️ Kein Rezept gefunden.</p>;
                     <h2 className="text-center fw-bold mb-4">{rezept.title}</h2>
                     {rezept.image && (
                         <MDBCardImage
-                            src={`http://fi.mshome.net:3001/uploads/${rezept.image}`}
+                            src={`${import.meta.env.VITE_API_SERVER_URL}/uploads/${rezept.image}`}
                             position='top'
                             alt={rezept.title}
                             style={{ maxWidth: '400px' }}
