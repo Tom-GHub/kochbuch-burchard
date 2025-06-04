@@ -7,6 +7,31 @@ const upload = multer({ dest: 'public/uploads/' });
 const router = express.Router(); //erstellt route objekt
 
 
+// isPublished?
+router.put('/api/rezeptveroeffentlichen/:id', authMiddleware, async (req, res) => {
+    const { id } = req.params;
+
+    const { isPublished } = req.body;
+    console.log('eigenerezepte.js - req.bod: ', req.body);
+
+    const conn = await getDatabaseConnection();
+    try {
+        await conn.query(
+            `UPDATE recipe 
+            SET published = ?
+            WHERE id = ?`,
+            [isPublished, id]
+        );
+        
+        res.json({ message: 'Rezept erfolgreich aktualisiert' });
+    } catch (error) {
+        console.error('Fehler beim Aktualisieren des Rezeptes:', error.message);
+        res.status(500).json({ error: 'Fehler beim Aktualisieren des Rezeptes' });
+    } finally {
+        conn.release();
+    }
+});
+
 // PUT-Route zum bearbeiten (sql alter where rezeptID = userID ?)
 router.put('/api/rezeptbearbeiten/:id', authMiddleware, upload.single('image'), async (req, res) => {
     const { id } = req.params;
@@ -42,13 +67,6 @@ router.put('/api/rezeptbearbeiten/:id', authMiddleware, upload.single('image'), 
                 [titel, zutatenliste, zubereitung, id, user_id]
             );
         }
-
-        // await conn.query(
-        //     `UPDATE recipe
-        //     SET title = ?, ingredients = ?, instructions = ?, image = ?
-        //     WHERE id = ? AND user_id = ?`,
-        //     [titel, zutatenliste, zubereitung, image, id, user_id]
-        // );
     
         res.json({ message: 'Rezept erfolgreich aktualisiert' });
     } catch (error) {
@@ -91,7 +109,7 @@ router.get('/api/eigenerezepte', authMiddleware, async (req, res) => {
         
             try {
                 const userRezeptResult = await conn.query(
-                `SELECT id, title, image, ingredients
+                `SELECT id, title, image, ingredients, published
                     FROM recipe
                     WHERE user_id = ?`, [user_id]
                 );
