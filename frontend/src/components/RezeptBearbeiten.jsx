@@ -13,8 +13,7 @@ import {
 from 'mdb-react-ui-kit';
 
 
-// verlinkung zum bearbeiten erstllen in App.jsx
-// hier brauche ich das Vorladen von dem Rezept aus der Datenbank
+
 
 function RezeptBearbeiten( {} ) { 
 
@@ -86,7 +85,7 @@ useEffect( () => {
         // console.log('handleChange - name:, value ',name, value);
     };
 
-    const handleSubmit = async (e) => {
+    const handleUpdate = async (e) => {
         e.preventDefault();
 
         // token hinzufügen im token ist userID - die api kann hieraus die id auslesen -> das passiert in der middleware
@@ -143,7 +142,7 @@ useEffect( () => {
     return(
         <>
         <MDBContainer fluid>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleUpdate}>
 
                 <MDBCard className='text-black m-5' style={{borderRadius: '25px'}}>
                     <MDBCardBody>
