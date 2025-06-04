@@ -9,6 +9,7 @@ import Rezept from './components/Rezept';
 import EigeneRezepte from './components/EigeneRezepte';
 import Rezeptliste from './components/Rezeptliste';
 import Detailansicht from './components/Detailansicht';
+import RezeptBearbeiten from './components/RezeptBearbeiten';
 import './App.css'
 import {
     MDBContainer,
@@ -19,7 +20,7 @@ import {
     MDBIcon,
     MDBCollapse
 } from 'mdb-react-ui-kit';
-import RezeptBearbeiten from './components/RezeptBearbeiten';
+
 
 
 function App() {
@@ -59,7 +60,7 @@ function App() {
         <MDBNavbar className='fixed-top shadow-3' expand='lg' light bgColor='primary'>
         <MDBContainer fluid>
             <MDBNavbarBrand 
-                className='kochbuch text-white fw-bold ' 
+                className='kochbuch-title text-white fw-bold ' 
                 style={{ 
                     fontFamily: 'DancingScript, cursive',
                     fontSize: '2rem'
@@ -87,15 +88,18 @@ function App() {
             <MDBNavbarNav className='link-style'>
             
                 <Nav.Link className="text-white" as={Link} to="/" onClick={() => setOpenNavSecond(false)}>Home</Nav.Link>
-                <Nav.Link className="text-white" as={Link} to="/register" onClick={() => setOpenNavSecond(false)}>Registrierung</Nav.Link>
                 <Nav.Link className="text-white" as={Link} to="/rezeptliste" onClick={() => setOpenNavSecond(false)}>Übersicht</Nav.Link>
 
-                {isLoggedIn && (
-                    <Nav.Link className="text-white" as={Link} to="/rezept" onClick={() => setOpenNavSecond(false)}>Rezept schreiben</Nav.Link>
+                {!isLoggedIn && (
+                    <Nav.Link className="text-white" as={Link} to="/register" onClick={() => setOpenNavSecond(false)}>Registrierung</Nav.Link>
                 )}
 
                 {isLoggedIn && (
                     <Nav.Link className="text-white" as={Link} to="/eigenerezepte" onClick={() => setOpenNavSecond(false)}>Eigene Rezepte</Nav.Link>
+                )}
+
+                {isLoggedIn && (
+                    <Nav.Link className="text-white" as={Link} to="/rezept" onClick={() => setOpenNavSecond(false)}>Rezept schreiben</Nav.Link>
                 )}
 
                 { isLoggedIn 

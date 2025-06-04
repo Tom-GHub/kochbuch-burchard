@@ -178,26 +178,11 @@ function Rezept( {} ) {
                                         boxShadow: 'none',       // kein Schatten beim Klicken
                                         outline: 'none',          // kein Outline beim Klicken
                                         transform: 'none'
-                                    }}>Speichern (nur für dich Sichtbar)
+                                    }}>Speichern
                             </Button>
                             
                         </div>
-
-                        <div className="w-100">
-                            <Button type="submit" 
-                                    className="w-100 fw-bold d-flex align-items-center justify-content-center" 
-                                    style={{
-                                        userSelect: 'none',
-                                        whiteSpace: 'nowrap',
-                                        height: '40px',
-                                        transition: 'none',      // kein Übergang beim Klick
-                                        boxShadow: 'none',       // kein Schatten beim Klicken
-                                        outline: 'none',          // kein Outline beim Klicken
-                                        transform: 'none'
-                                    }}>Speichern & Veröffentlichen
-                            </Button>
                             
-                        </div>
                         </MDBCol>
                     </MDBCardBody>
                 </MDBCard>

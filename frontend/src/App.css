@@ -60,3 +60,71 @@
   font-family: 'PoetsenOne', sans-serif;
   font-size: 1.2rem; /* Optional: etwas größer machen */
 }
+
+.btn-publish {
+  background-color: #00b894 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-unpublish {
+  background-color: #f4b642 !important; 
+  color: white !important;
+  border: none !important;
+}
+
+.btn-delete {
+  background-color: #e1dfdf !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn-update {
+  background-color: #6c5ce7 !important;
+  color: white !important;
+  border: none !important;
+}
+.btn-show {
+  background-color: #0984e3 !important;
+  color: white !important;
+  border: none !important;
+}
+
+body {
+  font-family: 'PoetsenOne', sans-serif !important;
+  
+}
+
+.kochbuch-title {
+  font-family: 'DancingScript', cursive !important;
+}
+
+.rezept-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rezept-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.category-badge {
+  font-family: 'PoetsenOne' !important;
+  letter-spacing: 1px;
+}
+
+.fixed-image-size {
+  height: 200px; /* Oder eine andere gewünschte Höhe */
+  width: 100%;
+  object-fit: cover; /* Wichtig für gleichmäßige Darstellung */
+}
+
+/* Optional: Wenn die Karten unterschiedliche Höhen haben */
+.md-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.md-card-body {
+  flex: 1; /* Nimmt den verfügbaren Platz ein */
+}
