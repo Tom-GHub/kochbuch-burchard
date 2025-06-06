@@ -55,9 +55,9 @@ LOCK TABLES `recipe` WRITE;
 INSERT INTO `recipe` VALUES
 (10,16,'Bananen','Banane','Schälen','69b66f6e8e8e09d4b0955d82e53886aa','2025-06-02 10:23:17',1),
 (16,5,'Pfannkuchen','Eier\r\nMehl\r\nMilch\r\nZucker','Vermischen und braten.','1c99cc8fec0f1f17eb97733efb233ab7','2025-06-02 14:28:00',1),
-(17,16,'Mehr Bananas','Baaaaaanaane','Essen','e3759ec75e8b2ac9f2f25614f0f60897','2025-06-03 11:38:18',0),
-(18,16,'So viele Banananas','Multinanen','Jagen','aca7fb7fd11392be4af1c5917207c62c','2025-06-03 11:39:56',1),
-(19,5,'asd','asdf\r\nasdf\r\nasdf\r\nasdf\r\nasdf\r\nsadf\r\nsadf\r\n','asdfq\r\nasdf\r\nasdf\r\nasdf','a67aedb55d6c42315e9610f3cb54f443','2025-06-03 13:56:55',1);
+(17,16,'Bananen-Pfannkuchen','Eier\r\nMehl\r\nMilch\r\nBananen','Zutaten vermischen und in der Pfanne backen.','887c3d435742812b70bc49725dcc65b2','2025-06-03 11:38:18',1),
+(18,16,'Bananen-Shake','Vanilleeis\r\nMilch\r\nBananen','Zutatenin einen Mixer geben und anschließend kalt stellen.','d7976370f8f300cfa155e33e0dc82998','2025-06-03 11:39:56',1),
+(19,5,'Chilli Con Carne','Bohnen\r\nHackfleisch\r\nTomaten\r\nZwiebeln\r\nKnoblauch\r\nChilli','Alles in einer Pfanne anbraten und köcheln lassen.','a67aedb55d6c42315e9610f3cb54f443','2025-06-03 13:56:55',1);
 /*!40000 ALTER TABLE `recipe` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -79,7 +79,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -91,7 +91,8 @@ LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES
 (5,'tom1','tom','b','tom@mail.de','$2b$10$sUbWwD38Zrcp03tEop2aHuuItMrRY0jQbICigIwTvFzK.sglwNrTe','2025-05-22 15:38:21'),
 (16,'tom2','mot','d','tom2@mail.de','$2b$10$BiQeAYM.AVqBApv1In85pOOm6ouMp.XKhOYIwVO.leJhA6W5pKRvu','2025-06-02 10:15:07'),
-(17,'tom3','tt','dd','tom3@mail.de','$2b$10$5FS1OKAJEJTSAfMNRz1GlOHVYm9SlS6i8C4cf06K/17Rg71iXtADy','2025-06-04 08:45:47');
+(17,'tom3','tt','dd','tom3@mail.de','$2b$10$5FS1OKAJEJTSAfMNRz1GlOHVYm9SlS6i8C4cf06K/17Rg71iXtADy','2025-06-04 08:45:47'),
+(18,'test','','','test@mail.de','$2b$10$y.T0eIBCBp5w6ovxgANbQuqm5u5CCHvzj/R8Fro39KuwgZOw2P9E.','2025-06-05 15:44:09');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -104,4 +105,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-06-04 11:30:44
+-- Dump completed on 2025-06-06 10:51:37
