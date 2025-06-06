@@ -128,8 +128,7 @@ function Register() {
                                             name="firstname"
                                             value={formData.firstname}
                                             onChange={handleChange}
-                                            placeholder="Vorname eingeben"
-                                            required
+                                            placeholder="Vorname (optional)"
                                         />
                                     </div>
 
@@ -143,8 +142,7 @@ function Register() {
                                             name="lastname"
                                             value={formData.lastname}
                                             onChange={handleChange}
-                                            placeholder="Nachname eingeben"
-                                            required
+                                            placeholder="Nachname (optional)"
                                         />
                                     </div>
                                 </div>
